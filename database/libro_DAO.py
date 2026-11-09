@@ -10,4 +10,30 @@ class LibroDAO:
     def __init__(self):
         pass
 
-    # TODO
+    def get_all_generi(self):
+
+        cnx = DBConnect.get_connection()
+        result = []
+        if cnx is None:
+            return result
+
+        query = " SELECT DISTINCT genere FROM libro WHERE genere IS NOT NULL "
+        cursor = cnx.cursor(dictionary=True)
+
+        try:
+            cursor.execute(query)
+
+
+            for row in cursor:
+                if row["genere"]:
+                    result.append(row["genere"])
+        except Exception as e:
+            print(f" Errore durante il recupero dei generi {e}")
+
+        finally:
+            cursor.close()
+            cnx.close()
+        return result
+
+
+
