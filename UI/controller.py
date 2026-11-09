@@ -41,3 +41,26 @@ class Controller:
     def update_genere(self,e):
         self.genere_selezionato = e.control.value
 
+    def handle_mostra_libri(self, e):
+        # Recuperiamo i filtri dai dropdown (gestendo eventuali spazi o valori vuoti)
+        bib = self._view.dd_biblioteca.value
+        gen = self._view.dd_genere.value
+
+        # Chiamata al model per ottenere la lista dei libri
+        libri = self._model.get_libri_filtrati(bib, gen)
+
+
+        self._view.list_view_libri.controls.clear()
+
+        if not libri:
+            self._view.show_alert("Nessun libro soddisfa i criteri di filtraggio indicati.")
+            self._view.page.update()
+            return
+
+        for libro in libri:
+            # Stampiamo il libro usando la sua rappresentazione in stringa o i campi diretti
+            self._view.list_view_libri.controls.append(
+                ft.Text(str(libro))
+            )
+
+        self._view.page.update()
