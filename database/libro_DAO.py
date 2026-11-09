@@ -35,5 +35,27 @@ class LibroDAO:
             cnx.close()
         return result
 
+    def get_libri_filtrati(self, id_biblioteca, genere):
 
+        cnx = DBConnect.get_connection()
+        result = []
+        if cnx is None:
+            return result
+
+        query = " SELECT * FROM libro WHERE id_biblioteca = COALESCE(%s, id_biblioteca) AND genere = COALESCE(%s, genere) "
+        cursor = cnx.cursor(dictionary=True)
+
+        try:
+            cursor.execute(query, (id_biblioteca, genere))
+
+            for row in cursor:
+                result.append(Libro(**row))
+        except Exception as e:
+            print(f" Errore durante il recupero dei libri filtrati{e}")
+
+        finally:
+            cursor.close()
+            cnx.close()
+
+        return result
 
